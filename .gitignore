@@ -8,6 +8,8 @@ yarn-error.log
 cache
 artifacts
 frontend/src/hardhat
+frontend/.next
+frontend/node_modules
 
 #misc
 .DS_Store
