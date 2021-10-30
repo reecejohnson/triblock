@@ -16,7 +16,10 @@ const SupportedNetworks = ({ close }: IProps) => {
   const [networkSwitchError, setNetworkSwitchError] = useState<boolean>(false);
 
   async function handleNetworkSwitch(supportedChainId: number) {
-    if (!library) setWalletNotConnectedError(true);
+    if (!library) {
+      setWalletNotConnectedError(true);
+      return;
+    }
     try {
       await switchToNetwork({ library, chainId: supportedChainId });
       close();

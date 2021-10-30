@@ -86,15 +86,10 @@ const Header = () => {
     }
   }, [activatingConnector, connector]);
 
-  console.log("connector", activatingConnector);
-  // handle logic to eagerly connect to the injected ethereum provider, if it exists and has granted access already
   const triedEager = useEagerConnect();
 
-  // handle logic to connect in reaction to certain events on the injected ethereum provider, if it exists
   useInactiveListener(!triedEager || !!activatingConnector);
   const isSupportedNetwork = supportedChainIds.includes(chainId);
-
-  console.log(walletConnectionError);
 
   async function connectWallet(connectorName: ConnectorNames) {
     try {
@@ -112,6 +107,7 @@ const Header = () => {
       setWalletConnectionError(WalletConnectionErrorType.GENERIC);
     }
   }
+
   return (
     <div className="flex justify-center">
       <Root>
@@ -134,7 +130,7 @@ const Header = () => {
                 >
                   {isSupportedNetwork ? <EthIcon /> : <ErrorIcon />}
                   <span className="font-semibold">
-                    {chainId ? getNetwork(chainId) : "No network connected"}
+                    {chainId ? getNetwork(chainId) : "Select a supported network"}
                   </span>
                   <DownIconContainer>
                     <DownIcon />

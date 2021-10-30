@@ -31,7 +31,8 @@ const WalletConnectionError = ({ walletConnectionError, closeModal }: IProps) =>
       return (
         <div className="flex flex-col items-center">
           <span className="mb-8">
-            Error connecting your wallet. Please ensure you are using one of the supported networks:
+            Please ensure your wallet is connected to one of the supported networks before trying to
+            establish a connection:
           </span>
           <SupportedNetworks close={closeModal} />
         </div>
