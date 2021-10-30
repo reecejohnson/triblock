@@ -23,6 +23,7 @@ import WalletConnectionError, {
 } from "./components/wallet-connection-error";
 import { useEagerConnect } from "../../hooks/useEagerConnect";
 import { useInactiveListener } from "../../hooks/useInactiveLisenter";
+import DownIcon from "../connected-wallet/components/down-icon";
 
 const Root = styled.div`
   position: fixed;
@@ -50,7 +51,7 @@ const Title = styled.div`
   }
 `;
 
-const DownIcon = styled.div`
+const DownIconContainer = styled.div`
   width: 14px;
   margin-left: 5px;
 `;
@@ -135,9 +136,9 @@ const Header = () => {
                   <span className="font-semibold">
                     {chainId ? getNetwork(chainId) : "No network connected"}
                   </span>
-                  <DownIcon>
-                    <Image src={downIcon} height={14} width={14} />
-                  </DownIcon>
+                  <DownIconContainer>
+                    <DownIcon />
+                  </DownIconContainer>
                 </button>
               </Outline>
             </div>

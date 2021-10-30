@@ -51,9 +51,7 @@ const ConnectedWallet = () => {
           >
             {isSupportedNetwork ? <EthIcon /> : <ErrorIcon />}
             <span className="font-semibold">{getNetwork(chainId)}</span>
-            <DownIcon>
-              <Image src={downIcon} height={14} width={14} />
-            </DownIcon>
+            <DownIcon />
           </button>
         </Outline>
         <Outline>

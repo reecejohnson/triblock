@@ -4,6 +4,7 @@ import styled from "styled-components";
 import logoQuestion from "lib/assets/logo-question.svg";
 import { GradientSpan } from "../index.styles";
 import MintButton from "../../../lib/components/mint-button";
+import LogoClear from "./logo-clear";
 
 const Root = styled.div``;
 
@@ -25,9 +26,9 @@ const Mint = () => {
         <h2 className="mt-5 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl mb-16">
           Mint your TriBolt
         </h2>
-        <Logo>
-          <Image src={logoQuestion} height={500} width={500} />
-        </Logo>
+        <div className="flex justify-center">
+          <LogoClear height={500} width={500} />
+        </div>
         <div className="text-lg leading-relaxed">
           <p className="max-w-lg mt-10 mx-auto">
             Each TriBolt is unique and created for it's minter by the algorithm embedded in the
