@@ -31,3 +31,16 @@ export const getNetwork = (chainId: number) => {
       return "Unknown Network";
   }
 };
+
+export interface Chain {
+  readonly rpcUrl: string;
+}
+
+export const CHAIN_INFORMATION: { readonly [chainId: number]: Chain } = {
+  [SupportedChainId.ROPSTEN]: {
+    rpcUrl: process.env.ROPSTEN_RPC,
+  },
+  [SupportedChainId.RINKEBY]: {
+    rpcUrl: process.env.RINKEBY_RPC,
+  },
+};

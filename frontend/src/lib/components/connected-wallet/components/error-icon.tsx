@@ -2,17 +2,22 @@ import Image from "next/image";
 import styled from "styled-components";
 import errorIcon from "../lib/error.svg";
 
-const Root = styled.div`
+const Root = styled.div<{ size: number }>`
   position: relative;
-  height: 20px;
-  width: 20px;
+  height: ${({ size }) => size}px;
+  width: ${({ size }) => size}px;
   margin-right: 7.5px;
 `;
 
-const ErrorIcon = () => {
+interface IProps {
+  sizeInPx?: number;
+}
+
+const ErrorIcon = ({ sizeInPx }: IProps) => {
+  const size = sizeInPx ?? 20;
   return (
-    <Root>
-      <Image src={errorIcon} height={20} width={20} />
+    <Root size={size}>
+      <Image src={errorIcon} height={size} width={size} />
     </Root>
   );
 };

@@ -16,8 +16,7 @@ export function useContract<T extends Contract = Contract>(
     const address = addressByNetwork[chainId];
     if (!address) return null;
     try {
-      const c = getContract(address, ABI, library, account);
-      return c;
+      return getContract(address, ABI, library, account);
     } catch (error) {
       return null;
     }

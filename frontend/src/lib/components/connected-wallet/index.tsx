@@ -3,12 +3,12 @@ import { Image as AccountImage } from "@davatar/react";
 import Image from "next/image";
 import MintButton from "lib/components/mint-button";
 import { theme } from "lib/theme";
-import { getNetwork, supportedChainIds } from "lib/network";
+import { getNetwork, supportedChainIds } from "lib/chains";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import { useState } from "react";
-import SupportedNetworks from "./components/supported-networks";
+import SelectNetworks from "./components/select-networks";
 import EthIcon from "../eth-icon";
 import downIcon from "lib/assets/down.svg";
 import ErrorIcon from "./components/error-icon";
@@ -66,7 +66,9 @@ const ConnectedWallet = () => {
           <MintButton />
         </div>
       </div>
-      {showSupportedNetworks && <SupportedNetworks />}
+      {showSupportedNetworks && (
+        <SelectNetworks hideSelectNetwork={() => setShowSupportedNetworks(false)} />
+      )}
     </div>
   );
 };

@@ -1,50 +1,58 @@
-import styled from "styled-components";
-import { theme } from "lib/theme";
-import { getNetwork, supportedChainIds } from "lib/network";
-import EthIcon from "lib/components/eth-icon";
+import { useState } from "react";
+import { switchToNetwork } from "lib/utils/switchNetwork";
 import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
-import ErrorIcon from "./error-icon";
+import { getNetwork, supportedChainIds } from "lib/chains";
+import ErrorModal from "lib/components/error-modal";
+import EthIcon from "lib/components/eth-icon";
 
-const Root = styled.div`
-  position: fixed;
-  top: 80px;
-  min-width: 250px;
-  background-color: rgb(255, 255, 255);
-  border: 1px solid rgb(247, 248, 250);
-  border-radius: 12px;
-  color: ${theme.colours.grey};
-  padding: 20px;
-  z-index: 1;
-`;
+interface IProps {
+  close: () => void;
+}
 
-const SupportedNetworks = () => {
-  const { chainId } = useWeb3React<Web3Provider>();
-  const isUnsupportedNetwork = !supportedChainIds.includes(chainId);
+const SupportedNetworks = ({ close }: IProps) => {
+  const { library } = useWeb3React<Web3Provider>();
+  const [walletNotConnectedError, setWalletNotConnectedError] = useState<boolean>(false);
+  const [networkSwitchError, setNetworkSwitchError] = useState<boolean>(false);
+
+  async function handleNetworkSwitch(supportedChainId: number) {
+    if (!library) setWalletNotConnectedError(true);
+    try {
+      await switchToNetwork({ library, chainId: supportedChainId });
+      close();
+    } catch (error) {
+      console.log(error);
+      setNetworkSwitchError(true);
+    }
+  }
+
   return (
-    <Root>
-      <div className="flex flex-col">
-        {isUnsupportedNetwork && (
-          <div className="flex items-center pl-2 mb-4 justify-between">
+    <>
+      {supportedChainIds.map((supportedChainId: number) => {
+        return (
+          <button
+            className="flex items-center pl-2 mt-3 justify-between"
+            onClick={() => handleNetworkSwitch(supportedChainId)}
+          >
             <div className="flex items-center mb-1">
-              <ErrorIcon />
-              <span className="font-semibold">{getNetwork(chainId)} is not supported</span>
+              <EthIcon />
+              <span className="font-semibold">{getNetwork(supportedChainId)}</span>
             </div>
-          </div>
-        )}
-        <span>Supported Networks</span>
-        {supportedChainIds.map((supportedChainId: number) => {
-          return (
-            <div className="flex items-center pl-2 mt-3 justify-between">
-              <div className="flex items-center mb-1">
-                <EthIcon />
-                <span className="font-semibold">{getNetwork(supportedChainId)}</span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </Root>
+          </button>
+        );
+      })}
+      {walletNotConnectedError && (
+        <p className="text-red-500 font-medium font-base mt-6 max-w-sm">
+          You must connect your wallet before you can switch network.
+        </p>
+      )}
+      {networkSwitchError && (
+        <ErrorModal
+          content="The selected network is either not installed or not supported"
+          closeModal={() => setNetworkSwitchError(false)}
+        />
+      )}
+    </>
   );
 };
 

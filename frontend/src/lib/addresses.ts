@@ -1,4 +1,4 @@
-import { SupportedChainId } from "./network";
+import { SupportedChainId } from "./chains";
 
 export type AddressMap = { [chainId: number]: string };
 
