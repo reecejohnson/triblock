@@ -4,10 +4,9 @@ import { ethers } from "hardhat";
 import chaiAsPromised from "chai-as-promised";
 import { Nft, Nft__factory } from "../frontend/src/hardhat/typechain";
 import { solidity } from "ethereum-waffle";
-import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ContractNames } from "../config/contract-names";
 import { allColours } from "../config/colours";
-import { ContractReceipt } from "ethers";
+import { ContractReceipt, Signer } from "ethers";
 
 const { expect } = chai;
 chai.use(solidity);
@@ -29,9 +28,7 @@ type MetaData = {
 
 describe("Nft", () => {
   let nftContract: Nft;
-  let accountOne: SignerWithAddress,
-    accountTwo: SignerWithAddress,
-    accountThree: SignerWithAddress;
+  let accountOne: Signer, accountTwo: Signer, accountThree: Signer;
 
   beforeEach(async () => {
     [accountOne, accountTwo, accountThree] = await ethers.getSigners();
@@ -46,6 +43,18 @@ describe("Nft", () => {
     await nftContract.deployed();
   });
 
+  it("should return true when wallet owns TriBolt", async () => {
+    const address = await accountTwo.getAddress();
+    const hasTriBoltPreMint = await nftContract.hasAtLeastOneTriBolt(address);
+    expect(hasTriBoltPreMint).to.be.false;
+
+    const tx = await nftContract.connect(accountTwo).mintNft();
+    await tx.wait();
+
+    const hasTriBoltPostMint = await nftContract.hasAtLeastOneTriBolt(address);
+    expect(hasTriBoltPostMint).to.be.true;
+  });
+
   it("should have the correct number of colours", async () => {
     const firstColoursArray = await nftContract.getFirstColours();
     const secondColoursArray = await nftContract.getSecondColours();
@@ -53,10 +62,10 @@ describe("Nft", () => {
 
     console.log(allColours.map((c) => c.slice(1, c.length)));
 
-    expect(firstColoursArray).to.have.length(63);
-    expect(secondColoursArray).to.have.length(63);
-    expect(thirdColoursArray).to.have.length(63);
-    expect(allColours).to.have.length(63);
+    expect(allColours).to.have.length(128);
+    expect(firstColoursArray).to.have.length(128);
+    expect(secondColoursArray).to.have.length(128);
+    expect(thirdColoursArray).to.have.length(128);
   });
 
   it("should emit event with all colours selected", async () => {
@@ -99,7 +108,7 @@ describe("Nft", () => {
     }
     expect(tripleMatch).to.eq(0);
     expect(doubleMatch).to.be.lessThan(10);
-  }).timeout(10000);
+  });
 
   it("should use each first colour and emit event", async () => {
     let expectedUsedColours = [...allColours];
@@ -114,7 +123,7 @@ describe("Nft", () => {
     expect(expectedUsedColours).to.have.length(0);
     const firstColourResponse = await nftContract.getSecondColours();
     expect(firstColourResponse).to.have.length(0);
-  }).timeout(10000);
+  });
 
   it("should use each second colour and emit event", async () => {
     let expectedUsedColours = [...allColours];
@@ -132,7 +141,7 @@ describe("Nft", () => {
     expect(expectedUsedColours).to.have.length(0);
     const secondColoursResponse = await nftContract.getSecondColours();
     expect(secondColoursResponse).to.have.length(0);
-  }).timeout(10000);
+  });
 
   it("should use each third colour and emit event", async () => {
     let expectedUsedColours = [...allColours];
@@ -147,7 +156,7 @@ describe("Nft", () => {
     expect(expectedUsedColours).to.have.length(0);
     const thirdColoursResponse = await nftContract.getThirdColours();
     expect(thirdColoursResponse).to.have.length(0);
-  }).timeout(10000);
+  });
 
   it("should have the correct id for the nft title", async () => {
     for (let i = 0; i < allColours.length; i++) {
@@ -159,9 +168,9 @@ describe("Nft", () => {
 
       const metadata = decode(json);
 
-      expect(metadata.name).to.eq(`Tri Lines #${i}`);
+      expect(metadata.name).to.eq(`TriBolt #${i + 1}`);
     }
-  }).timeout(10000);
+  });
 
   function getColourForEvent(res: ContractReceipt, eventName: EventName) {
     return res.events.find((e) => e.event === eventName).args[0];
